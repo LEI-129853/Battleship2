@@ -1,6 +1,8 @@
 package battleship;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +42,9 @@ public class Tasks {
 
 		IFleet myFleet = null;
 		IGame game = null;
+		List<String> diarioDeBordo = new ArrayList<>(); // Inicializa o Diário de Bordo
+		int contadorRajadas = 1; // Contador para enumerar as rajadas no PDF
+
 		menuHelp();
 
 		System.out.print("> ");
@@ -68,12 +73,17 @@ public class Tasks {
 					break;
 				case RAJADA:
 					if (game != null) {
-						game.readEnemyFire(in);
+						String detalhesRajada = game.readEnemyFire(in);
+						// Regista numa só linha limpa
+						diarioDeBordo.add("Rajada " + contadorRajadas + " (Manual): " + detalhesRajada);
+						contadorRajadas++;
+
 						myFleet.printStatus();
 						game.printMyBoard(true, false);
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
+							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf");
 							System.exit(0);
 						}
 					}
@@ -81,18 +91,24 @@ public class Tasks {
 				case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
-							game.randomEnemyFire();
+							String detalhesSimulacao = game.randomEnemyFire();
+							// Regista numa só linha limpa
+							diarioDeBordo.add("Rajada " + contadorRajadas + " (Automática): " + detalhesSimulacao);
+							contadorRajadas++;
+
 							myFleet.printStatus();
 							game.printMyBoard(true, false);
+
 							try {
 								Thread.sleep(3000);
 							} catch (InterruptedException e) {
-								Thread.currentThread().interrupt(); // Best practice: restore interrupt status
+								Thread.currentThread().interrupt();
 							}
 						}
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
+							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf");
 							System.exit(0);
 						}
 					}
@@ -101,15 +117,21 @@ public class Tasks {
 					if (game != null)
 						game.printMyBoard(true, true);
 					break;
-                case AJUDA:
-                    menuHelp();
-                    break;
+				case AJUDA:
+					menuHelp();
+					break;
 				default:
 					System.out.println("Que comando é esse??? Repete ...");
 			}
 			System.out.print("> ");
 			command = in.next();
 		}
+
+		// Exporta o PDF caso o jogador decida usar o comando "desisto" e sair a meio
+		if (!diarioDeBordo.isEmpty()) {
+			PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf");
+		}
+
 		System.out.println(GOODBYE_MESSAGE);
 	}
 
