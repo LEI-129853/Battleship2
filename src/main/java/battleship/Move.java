@@ -3,8 +3,10 @@ package battleship;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Shot
@@ -65,6 +67,9 @@ public class Move implements IMove {
 	@Override
 	public String processEnemyFire(boolean verbose) {
 
+		// Iniciar cronómetro para medir a jogada atual
+		StopWatch tempoJogada = StopWatch.createStarted();
+
 		int validShots = 0;
 		int repeatedShots = 0;
 		int missedShots = 0;
@@ -86,7 +91,7 @@ public class Move implements IMove {
 				validShots++;
 				if (result.ship() == null)
 					missedShots++; // Tiro na água
-				else{
+				else {
 					String boatName = result.ship().getCategory();
 					hitsPerBoat.put(boatName, hitsPerBoat.getOrDefault(boatName, 0) + 1);
 					if (result.sunk())
@@ -186,7 +191,6 @@ public class Move implements IMove {
 		// Serializar o JSON utilizando Jackson
 		String jsonString;
 
-		// Serializar os tiros gerados em JSON usando a biblioteca Jackson
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -197,7 +201,11 @@ public class Move implements IMove {
 		}
 
 		System.out.println(jsonString);
-		System.out.println();
+
+		// Parar cronómetro da jogada e apresentar tempo
+		tempoJogada.stop();
+		long segundosJogada = tempoJogada.getTime(TimeUnit.SECONDS);
+		System.out.println("⏱️  Tempo desta jogada: " + segundosJogada + " segundo(s).\n");
 
 		// Retornar o JSON
 		return jsonString;
