@@ -14,7 +14,7 @@
 | Nome | Nº de estudante | Conta GitHub | Requisito (Issue) |
 | :--- | :--- | :--- | :--- |
 | Daniel | 129853 | [LEI-129853](https://github.com/LEI-129853) | Exportar histórico de jogadas para PDF (#1) |
-| Duarte | 129850 | [LEI-129851] | Scoreboard dos jogos passados (#2) |
+| Duarte | 129851 | [LEI-129851] | Scoreboard dos jogos passados (#2) |
 | Dinis | 129820 | [LEI-129820] | Tempo gasto em cada jogada (#3) |
 
 > Atualizar os números dos issues e as contas GitHub depois de criados.
