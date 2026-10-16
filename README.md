@@ -1,158 +1,180 @@
 # ⚓ Battleship 2.0
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Java Version](https://img.shields.io/badge/Java-17%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+▶️ **Vídeo de demonstração (máx. 5 min + 1 min com o LLM):** [COLAR AQUI O LINK DO YOUTUBE](https://www.youtube.com/)
 
-> A modern take on the classic naval warfare game, designed for the XVII century setting with updated software engineering patterns.
+> Simulador do jogo da Batalha Naval numa versão do tempo dos Descobrimentos Portugueses, desenvolvido no âmbito da unidade curricular de Engenharia de Software (Iscte-IUL, 2026/2027).
 
----
-
-## 📖 Table of Contents
-- [Project Overview](#-project-overview)
-- [Key Features](#-key-features)
-- [Technical Stack](#-technical-stack)
-- [Installation & Setup](#-installation--setup)
-- [Code Architecture](#-code-architecture)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
+![Java Version](https://img.shields.io/badge/Java-21%2B-blue)
+![Build Tool](https://img.shields.io/badge/build-Maven-orange)
 
 ---
 
-## 🎯 Project Overview
-This project serves as a template and reference for students learning **Object-Oriented Programming (OOP)** and **Software Quality**. It simulates a battleship environment where players must strategically place ships and sink the enemy fleet.
+## 👥 Grupo
 
-### 🎮 The Rules
-The game is played on a grid (typically 10x10). The coordinate system is defined as:
+| Nome | Nº de estudante | Conta GitHub | Requisito (Issue) |
+| :--- | :--- | :--- | :--- |
+| Daniel | 129853 | [LEI-129853](https://github.com/LEI-129853) | Exportar histórico de jogadas para PDF (#1) |
+| Duarte | 129850 | [LEI-129851] | Scoreboard dos jogos passados (#2) |
+| Dinis | 129820 | [LEI-129820] | Tempo gasto em cada jogada (#3) |
 
-$$(x, y) \in \{0, \dots, 9\} \times \{0, \dots, 9\}$$
-
-Hits are calculated based on the intersection of the shot vector and the ship's bounding box.
-
----
-
-## ✨ Key Features
-| Feature | Description | Status |
-| :--- | :--- | :---: |
-| **Grid System** | Flexible $N \times N$ board generation. | ✅ |
-| **Ship Varieties** | Galleons, Frigates, and Brigantines (XVII Century theme). | ✅ |
-| **AI Opponent** | Heuristic-based targeting system. | 🚧 |
-| **Network Play** | Socket-based multiplayer. | ❌ |
+> Atualizar os números dos issues e as contas GitHub depois de criados.
 
 ---
 
-## 🛠 Technical Stack
-* **Language:** Java 17
-* **Build Tool:** Maven / Gradle
-* **Testing:** JUnit 5
-* **Logging:** Log4j2
+## 📖 Índice
+
+- [Descrição do projeto](#-descrição-do-projeto)
+- [Tecnologias](#-tecnologias)
+- [Instalação e execução](#-instalação-e-execução)
+- [Documentação (Javadoc)](#-documentação-javadoc)
+- [Funcionalidades do Sprint](#-funcionalidades-do-sprint)
+- [Treino do oponente de IA](#-treino-do-oponente-de-ia)
+- [Fluxo de trabalho com Git](#-fluxo-de-trabalho-com-git)
+- [Respostas às perguntas do passo B2](#respostas-às-perguntas-do-passo-b2)
+- [Créditos](#-créditos)
 
 ---
 
-## 🚀 Installation & Setup
+## 🎯 Descrição do projeto
 
-### Prerequisites
-* JDK 17 or higher
-* Git
+O jogo decorre num tabuleiro de 10×10, com linhas de **A a J** e colunas de **1 a 10**. Cada jogador tem uma frota de 11 navios que não se podem tocar, nem na diagonal:
 
-### Step-by-Step
-1. **Clone the repository:**
+| Navio | Quantidade | Posições |
+| :--- | :---: | :---: |
+| Barca | 4 | 1 |
+| Caravela | 3 | 2 |
+| Nau | 2 | 3 |
+| Fragata | 1 | 4 |
+| Galeão (em forma de T) | 1 | 5 |
+
+Esta versão permite **simular** o jogo: atiram-se rajadas de 3 tiros num só tabuleiro e analisa-se o resultado, até todos os navios serem afundados. O projeto inclui ainda um servidor REST (pacote `restserver`) para a interação com o oponente de IA.
+
+---
+
+## 🛠 Tecnologias
+
+- **Linguagem:** Java 21
+- **Gestão de dependências e build:** Apache Maven
+- **Testes:** JUnit 5
+- **Logging:** Log4j2
+- **JSON:** Jackson
+- **Servidor REST:** Spring Boot
+- **IDE:** IntelliJ IDEA
+
+---
+
+## 🚀 Instalação e execução
+
+### Pré-requisitos
+
+- JDK 21 ou superior (confirmar com `java -version`)
+- Maven (ou o suporte Maven incluído no IntelliJ)
+- Git
+
+### Passos
+
+1. **Clonar o repositório:**
    ```bash
-   git clone [https://github.com/britoeabreu/Battleship2.git](https://github.com/britoeabreu/Battleship2.git)
+   git clone https://github.com/LEI-129853/Battleship2.git
    ```
-2. **Navigate to directory:**
+2. **Entrar na diretoria:**
    ```bash
    cd Battleship2
    ```
-3. **Compile and Run:**
+3. **Compilar com o Maven:**
    ```bash
-   javac Main.java && java Main
+   mvn compile
    ```
+4. **Executar a simulação:** no IntelliJ, correr a classe `battleship.Main`.
 
----
+Para gerar o JAR executável (inclui todas as dependências):
 
-## 📚 Documentation
-
-You can access the generated Javadoc here:
-
-👉 [Battleship2 API Documentation](https://britoeabreu.github.io/Battleship2/)
-
-
-### Core Logic
-```java
-public class Ship {
-    private String name;
-    private int size;
-    private boolean isSunk;
-
-    // TODO: Implement damage logic
-    public void hit() {
-        // Implementation here
-    }
-}
+```bash
+mvn package
+java -jar target/BattleshipGamePlayer-2.0.jar
 ```
 
-### Design Patterns Used:
-- **Strategy Pattern:** For different AI difficulty levels.
-- **Observer Pattern:** To update the UI when a ship is hit.
-</details>
+### Testes
 
-### Logic Flow
-```mermaid
-graph TD
-    A[Start Game] --> B{Place Ships}
-    B --> C[Player Turn]
-    C --> D[Target Coordinate]
-    D --> E{Hit or Miss?}
-    E -- Hit --> F[Check if Sunk]
-    E -- Miss --> G[AI Turn]
-    F --> G
-    G --> C
-```
-
----
-
-## 🗺 Roadmap
-- [x] Basic grid implementation
-- [x] Ship placement validation
-- [ ] Add sound effects (SFX)
-- [ ] Implement "Fog of War" mechanic
-- [ ] **Multiplayer Integration** (High Priority)
-
----
-
-## 🧪 Testing
-We use high-coverage unit testing to ensure game stability. Run tests using:
 ```bash
 mvn test
 ```
 
-> [!TIP]
-> Use the `-Dtest=ClassName` flag to run specific test suites during development.
+---
+
+## 📚 Documentação (Javadoc)
+
+O site de documentação técnica está publicado com o GitHub Pages:
+
+👉 [Battleship2 – API Documentation](https://lei-129853.github.io/Battleship2/)
+
+O conteúdo é gerado com o Javadoc e fica na pasta `docs` do ramo `main`.
 
 ---
 
-## 🤝 Contributing
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
+## ✨ Funcionalidades do Sprint
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a **Pull Request**
+Cada membro do grupo implementa um requisito diferente, num ramo próprio (com o número de estudante no nome), usando pelo menos uma biblioteca do Maven Central. Cada requisito está registado como *user story* nos [Issues](https://github.com/LEI-129853/Battleship2/issues) e integrado no `main` por *pull request*.
+
+| Requisito | Biblioteca (Maven Central) | Ramo | Issue | Estado |
+| :--- | :--- | :--- | :---: | :---: |
+| Exportar o histórico de jogadas para PDF | `org.apache.pdfbox:pdfbox` | `feature-129853-pdf` | #1 | 🚧 |
+| Scoreboard dos jogos passados | `com.h2database:h2` | `feature-129850-scoreboard` | #2 | 🚧 |
+| Relógio com o tempo gasto em cada jogada | `com.google.guava:guava` | `feature-129820-tempo` | #3 | 🚧 |
+
+> Atualizar a coluna "Estado" (✅ concluído) à medida que os pull requests forem fundidos.
+
+---
+
+## 🤖 Treino do oponente de IA
+
+O oponente de IA é treinado com a técnica de *few-shot prompting*: mostram-se ao LLM exemplos de entradas e saídas corretas dentro do próprio prompt.
+
+### Protocolo de comunicação (JSON)
+
+A rajada de 3 tiros e a respetiva resposta são trocadas em objetos JSON. O campo `repeatedShots` conta os tiros em posições já atingidas, `outsideShots` os tiros fora do tabuleiro e `missedShots` os tiros na água.
+
+```json
+{
+  "validShots": 3,
+  "sunkBoats": [ {"count": 1, "type": "Barca"} ],
+  "repeatedShots": 0,
+  "outsideShots": 0,
+  "hitsOnBoats": [ {"hits": 1, "type": "Nau"} ],
+  "missedShots": 1
+}
+```
+
+### Prompt final da estratégia
+
+> Colar aqui o prompt final da estratégia, depois de melhorado pelo grupo (Diário de Bordo, sem tiros repetidos, tiros contíguos após um acerto, diagonais de um acerto são água, halo à volta dos navios afundados, etc.).
+
+```text
+(prompt final do grupo)
+```
 
 ---
 
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+## 🤝 Fluxo de trabalho com Git
+
+1. Cada requisito é escrito como *user story* num **Issue** com a etiqueta `type: ENHANCEMENT`.
+2. Cada membro trabalha num **ramo próprio** (`feature-<nº de estudante>-<tema>`), com commits pequenos e descritivos.
+3. A integração no `main` é feita por **pull request**, com o link do issue no comentário.
+4. Cada pull request é revisto por **outro membro do grupo** antes da fusão.
+5. Os conflitos de fusão são resolvidos em grupo.
 
 ---
-**Maintained by:** [@britoeabreu](https://github.com/britoeabreu)  
-*Created for the Software Engineering students at ISCTE-IUL.*
 
-## Respostas às Perguntas do Passo B2
+## Respostas às perguntas do passo B2
+
 **Como é que o Maven descobre as dependências transitivas?**
-Cada biblioteca tem o seu próprio pom.xml no repositório, onde declara as dependências dela. O Maven lê-os recursivamente e constrói a árvore completa.
+Cada biblioteca tem o seu próprio `pom.xml` no repositório, onde declara as dependências dela. O Maven lê-os recursivamente e constrói a árvore completa.
 
 **Porque é que as compilações seguintes são mais rápidas?**
-Os JARs ficam guardados no repositório local (~/.m2) na primeira compilação, pelo que não voltam a ser descarregados.
+Os JARs ficam guardados no repositório local (`~/.m2`) na primeira compilação, pelo que não voltam a ser descarregados.
+
+---
+
+## 🙏 Créditos
+
+Projeto base: [britoeabreu/Battleship2](https://github.com/britoeabreu/Battleship2), criado para os estudantes de Engenharia de Software do Iscte-IUL.
