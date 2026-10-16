@@ -16,24 +16,43 @@ public class PdfExporter {
             PDPage page = new PDPage();
             document.addPage(page);
 
-            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-                contentStream.beginText();
-                // Configuração da fonte (Sintaxe compatível com PDFBox 3.x)
-                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
-                contentStream.setLeading(14.5f);
-                contentStream.newLineAtOffset(50, 700);
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            float leading = 16.0f;
+            contentStream.setLeading(leading);
+            contentStream.newLineAtOffset(50, 700);
+            float yPosition = 700;
 
-                contentStream.showText("Relatório do Diário de Bordo - Batalha Naval");
-                contentStream.newLine();
-                contentStream.newLine();
+            contentStream.showText("Relatório do Diário de Bordo - Batalha Naval");
+            contentStream.newLine();
+            contentStream.newLine();
+            yPosition -= (2 * leading);
 
-                for (String log : shotLogs) {
-                    contentStream.showText(log);
-                    contentStream.newLine();
+            for (String log : shotLogs) {
+                // Paginação: se o texto chegar ao fundo da página, cria uma folha nova
+                if (yPosition <= 50) {
+                    contentStream.endText();
+                    contentStream.close();
+
+                    page = new PDPage();
+                    document.addPage(page);
+                    contentStream = new PDPageContentStream(document, page);
+                    contentStream.beginText();
+                    contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+                    contentStream.setLeading(leading);
+                    contentStream.newLineAtOffset(50, 700);
+                    yPosition = 700;
                 }
 
-                contentStream.endText();
+                contentStream.showText(log);
+                contentStream.newLine();
+                yPosition -= leading;
             }
+
+            contentStream.endText();
+            contentStream.close();
+
             document.save(filename);
             System.out.println("PDF das rajadas exportado com sucesso para: " + filename);
 

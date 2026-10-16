@@ -73,17 +73,17 @@ public class Tasks {
 					break;
 				case RAJADA:
 					if (game != null) {
-						game.readEnemyFire(in);
+						String detalhesRajada = game.readEnemyFire(in);
+						// Regista numa só linha limpa
+						diarioDeBordo.add("Rajada " + contadorRajadas + " (Manual): " + detalhesRajada);
+						contadorRajadas++;
+
 						myFleet.printStatus();
 						game.printMyBoard(true, false);
 
-						// Regista a rajada manual no diário
-						diarioDeBordo.add("Rajada " + contadorRajadas + " disparada manualmente.");
-						contadorRajadas++;
-
 						if (game.getRemainingShips() == 0) {
 							game.over();
-							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf"); // Exporta se o jogo terminar com vitória
+							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf");
 							System.exit(0);
 						}
 					}
@@ -91,13 +91,13 @@ public class Tasks {
 				case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
-							game.randomEnemyFire();
+							String detalhesSimulacao = game.randomEnemyFire();
+							// Regista numa só linha limpa
+							diarioDeBordo.add("Rajada " + contadorRajadas + " (Automática): " + detalhesSimulacao);
+							contadorRajadas++;
+
 							myFleet.printStatus();
 							game.printMyBoard(true, false);
-
-							// Regista a rajada automática no diário
-							diarioDeBordo.add("Rajada " + contadorRajadas + " disparada pela simulação.");
-							contadorRajadas++;
 
 							try {
 								Thread.sleep(3000);
@@ -108,7 +108,7 @@ public class Tasks {
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
-							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf"); // Exporta se a simulação terminar com vitória
+							PdfExporter.exportShots(diarioDeBordo, "rajadas-129853.pdf");
 							System.exit(0);
 						}
 					}

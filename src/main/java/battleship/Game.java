@@ -221,7 +221,6 @@ public class Game implements IGame
 	 */
 	public String randomEnemyFire() {
 
-		// Criar uma instância de Random com uma seed baseada no timestamp atual
 		Random random = new Random(System.currentTimeMillis());
 
 		Set<IPosition> usablePositions = new HashSet<IPosition>();
@@ -234,11 +233,9 @@ public class Game implements IGame
 
 		List<IPosition> candidateShots = new ArrayList<>(usablePositions);
 
-		// Criar lista para armazenar os tiros
 		List<IPosition> shots = new ArrayList<IPosition>();
 
 		System.out.println();
-		// Gerar coordenadas únicas até atingir o número definido por NUMBER_SHOTS
 
 		IPosition newShot = null;
 		if (candidateShots.size() >= Game.NUMBER_SHOTS)
@@ -262,11 +259,13 @@ public class Game implements IGame
 			System.out.print(shot + " ");
 		System.out.println();
 
+		// Dispara os tiros
 		this.fireShots(shots);
 
-		return Game.jsonShots(shots);
+		// Vai buscar a última jogada à lista e extrai o JSON (false para não imprimir 2 vezes na consola)
+		IMove ultimaJogada = this.alienMoves.get(this.alienMoves.size() - 1);
+		return ultimaJogada.processEnemyFire(false);
 	}
-
 
 	/**
 	 * Reads and processes the enemy fire input from the specified scanner.
@@ -292,11 +291,9 @@ public class Game implements IGame
 
 		Scanner inputScanner = new Scanner(input);
 		while (shots.size() < NUMBER_SHOTS && inputScanner.hasNext()) {
-			// Lê a próxima parte e constrói uma posição
 			String token = inputScanner.next();
 
 			if (token.matches("[A-Za-z]")) {
-				// Caso seja somente uma coluna ("A", "B", etc.), esperar o próximo número
 				if (inputScanner.hasNextInt()) {
 					int row = inputScanner.nextInt();
 					shots.add(new Position(token.toUpperCase().charAt(0), row));
@@ -304,7 +301,6 @@ public class Game implements IGame
 					throw new IllegalArgumentException("Posição incompleta! A coluna '" + token + "' não é seguida por uma linha.");
 				}
 			} else {
-				// Caso o token já contenha a coluna e a linha juntas (ex.: "A3")
 				Scanner singleScanner = new Scanner(token);
 				shots.add(Tasks.readClassicPosition(singleScanner));
 			}
@@ -314,9 +310,12 @@ public class Game implements IGame
 			throw new IllegalArgumentException("Você deve inserir exatamente " + NUMBER_SHOTS + " posições!");
 		}
 
+		// Dispara os tiros
 		this.fireShots(shots);
 
-		return Game.jsonShots(shots);
+		// Vai buscar a última jogada à lista e extrai o JSON (false para não imprimir 2 vezes na consola)
+		IMove ultimaJogada = this.alienMoves.get(this.alienMoves.size() - 1);
+		return ultimaJogada.processEnemyFire(false);
 	}
 
 	/**
@@ -348,8 +347,7 @@ public class Game implements IGame
 
 		Move move = new Move(moveNumber, shots, shotResults);
 
-//		System.out.println(move);
-
+		// Imprime na consola a informação e o JSON
 		move.processEnemyFire(true);
 
 		alienMoves.add(move);
@@ -447,9 +445,9 @@ public class Game implements IGame
 	}
 
 	public void over() {
-			System.out.println();
-			System.out.println("+--------------------------------------------------------------+");
-			System.out.println("| Maldito sejas, Java Sparrow, eu voltarei, glub glub glub ... |");
-			System.out.println("+--------------------------------------------------------------+");
+		System.out.println();
+		System.out.println("+--------------------------------------------------------------+");
+		System.out.println("| Maldito sejas, Java Sparrow, eu voltarei, glub glub glub ... |");
+		System.out.println("+--------------------------------------------------------------+");
 	}
 }
