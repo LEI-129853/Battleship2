@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>pt.iscte-iul.istar</groupId>
@@ -13,45 +13,45 @@
 	<url>https://github.com/britoeabreu/Battleship2.git</url>
 
 	<developers>
-	  <developer>
-		<id>mgoulao</id>
-		<name>Miguel Goulão</name>
-		<email>mgoul@fct.unl.pt</email>
-		<organization>FCT/UNL</organization>
-		<roles>
-		  <role>Product Owner</role>
-		</roles>
-	  </developer>
+		<developer>
+			<id>mgoulao</id>
+			<name>Miguel Goulão</name>
+			<email>mgoul@fct.unl.pt</email>
+			<organization>FCT/UNL</organization>
+			<roles>
+				<role>Product Owner</role>
+			</roles>
+		</developer>
 
-	  <developer>
-		<id>jose-vicente-reis</id>
-		<name>José Vicente Reis</name>
-		<email>Jose_Vicente_Reis@iscte-iul.pt</email>
-		<organization>Iscte-IUL</organization>
-		<roles>
-		  <role>Team Member</role>
-		</roles>
-	  </developer>
+		<developer>
+			<id>jose-vicente-reis</id>
+			<name>José Vicente Reis</name>
+			<email>Jose_Vicente_Reis@iscte-iul.pt</email>
+			<organization>Iscte-IUL</organization>
+			<roles>
+				<role>Team Member</role>
+			</roles>
+		</developer>
 
-	  <developer>
-		<id>adriano-lopes</id>
-		<name>Adriano Lopes</name>
-		<email>adriano.lopes@iscte-iul.pt</email>
-		<organization>Iscte-IUL</organization>
-		<roles>
-		  <role>Team Member</role>
-		</roles>
-	  </developer>
+		<developer>
+			<id>adriano-lopes</id>
+			<name>Adriano Lopes</name>
+			<email>adriano.lopes@iscte-iul.pt</email>
+			<organization>Iscte-IUL</organization>
+			<roles>
+				<role>Team Member</role>
+			</roles>
+		</developer>
 
-	  <developer>
-		<id>fernando-brito-abreu</id>
-		<name>Fernando Brito e Abreu</name>
-		<email>fba@iscte-iul.pt</email>
-		<organization>Iscte-IUL</organization>
-		<roles>
-		  <role>Scrum Master</role>
-		</roles>
-	  </developer>
+		<developer>
+			<id>fernando-brito-abreu</id>
+			<name>Fernando Brito e Abreu</name>
+			<email>fba@iscte-iul.pt</email>
+			<organization>Iscte-IUL</organization>
+			<roles>
+				<role>Scrum Master</role>
+			</roles>
+		</developer>
 	</developers>
 
 	<properties>
@@ -132,6 +132,13 @@
 			<artifactId>annotations</artifactId>
 			<version>${jetbrains.annotations.version}</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<!-- Apache Commons Lang3 (Dependencia Dinis - Medicao de tempo) -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.17.0</version>
 		</dependency>
 	</dependencies>
 
