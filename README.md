@@ -120,7 +120,7 @@ Cada membro do grupo implementa um requisito diferente, num ramo próprio (com o
 | :--- | :--- | :--- | :---: | :---: |
 | Exportar o histórico de jogadas para PDF | `org.apache.pdfbox:pdfbox` | `feature-129853-pdf` | #1 | ✅  |
 | Scoreboard dos jogos passados | `com.h2database:h2` | `feature-129850-scoreboard` | #2 | ✅  |
-| Relógio com o tempo gasto em cada jogada | `com.google.guava:guava` | `feature-129820-tempo` | #3 | ✅  |
+| Relógio com o tempo gasto em cada jogada | `commons-lang3` | `feature-129820-tempo` | #3 | ✅  |
 
 
 ---
