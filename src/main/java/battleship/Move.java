@@ -29,11 +29,6 @@ public class Move implements IMove {
 	}
 
 	@Override
-	public String getSummary() {
-		return this.summary;
-	}
-
-	@Override
 	public String toString() {
 		return "Move{" +
 				"number=" + number +
