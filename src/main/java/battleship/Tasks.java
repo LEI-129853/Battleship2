@@ -99,7 +99,6 @@ public class Tasks {
 						// Pára o tempo assim que a rajada é lida e os tiros processados
 						tempoJogada.stop();
 						System.out.println("⏱️  Tempo desta jogada: " + tempoJogada.getTime(TimeUnit.SECONDS) + " segundo(s).\n");
-						numeroDeRajadas++;
 						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
 
 						myFleet.printStatus();
@@ -119,7 +118,6 @@ public class Tasks {
 						while (game.getRemainingShips() > 0){
 							numeroDeRajadas++; // Incrementa as rajadas na simulação
 							game.randomEnemyFire();
-							numeroDeRajadas++;
 							diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Automática): " + resumoUltimaJogada(game));
 
 							myFleet.printStatus();
