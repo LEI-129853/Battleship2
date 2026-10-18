@@ -32,6 +32,7 @@ public class Tasks {
 	private static final String MAPA = "mapa";
 	private static final String STATUS = "estado";
 	private static final String SIMULA = "simula";
+	private static final String SCOREBOARD = "scoreboard"; // Novo comando adicionado
 
 	/**
 	 * This task also tests the fighting element of a round of three shots
@@ -40,6 +41,8 @@ public class Tasks {
 
 		IFleet myFleet = null;
 		IGame game = null;
+		int numeroDeRajadas = 0; // Contador para gravar na base de dados
+
 		menuHelp();
 
 		System.out.print("> ");
@@ -51,11 +54,13 @@ public class Tasks {
 				case GERAFROTA:
 					myFleet = Fleet.createRandom();
 					game = new Game(myFleet);
+					numeroDeRajadas = 0; // Reinicia o contador para um novo jogo
 					game.printMyBoard(false, true);
 					break;
 				case LEFROTA:
 					myFleet = buildFleet(in);
 					game = new Game(myFleet);
+					numeroDeRajadas = 0; // Reinicia o contador para um novo jogo
 					game.printMyBoard(false, true);
 					break;
 				case STATUS:
@@ -68,12 +73,14 @@ public class Tasks {
 					break;
 				case RAJADA:
 					if (game != null) {
+						numeroDeRajadas++; // Incrementa as rajadas efetuadas
 						game.readEnemyFire(in);
 						myFleet.printStatus();
 						game.printMyBoard(true, false);
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
+							Scoreboard.saveGame(numeroDeRajadas); // Grava na BD
 							System.exit(0);
 						}
 					}
@@ -81,6 +88,7 @@ public class Tasks {
 				case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
+							numeroDeRajadas++; // Incrementa as rajadas na simulação
 							game.randomEnemyFire();
 							myFleet.printStatus();
 							game.printMyBoard(true, false);
@@ -93,6 +101,7 @@ public class Tasks {
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
+							Scoreboard.saveGame(numeroDeRajadas); // Grava na BD
 							System.exit(0);
 						}
 					}
@@ -101,9 +110,12 @@ public class Tasks {
 					if (game != null)
 						game.printMyBoard(true, true);
 					break;
-                case AJUDA:
-                    menuHelp();
-                    break;
+				case SCOREBOARD:
+					Scoreboard.showScoreboard(); // Exibe os resultados anteriores
+					break;
+				case AJUDA:
+					menuHelp();
+					break;
 				default:
 					System.out.println("Que comando é esse??? Repete ...");
 			}
@@ -126,9 +138,11 @@ public class Tasks {
 		System.out.println("- " + RAJADA + ": Realiza uma rajada de disparos.");
 		System.out.println("- " + SIMULA + ": Simula um jogo completo.");
 		System.out.println("- " + TIROS + ": Lista os tiros válidos realizados (* = tiro em navio, o = tiro na água)");
+		System.out.println("- " + SCOREBOARD + ": Consulta o histórico de jogos passados (rajadas/data).");
 		System.out.println("- " + DESISTIR + ": Encerra o jogo.");
 		System.out.println("===============================================================");
 	}
+
 	/**
 	 * This operation allows the build up of a fleet, given user data
 	 *
