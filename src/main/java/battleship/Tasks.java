@@ -176,12 +176,12 @@ public class Tasks {
 		}
 		System.out.println(GOODBYE_MESSAGE);
 	}
-	private static void terminaJogo(IGame game, List<String> diarioDeBordo) {
-		game.over();
-		PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
-		System.exit(0);
+	private static void terminaJogo(IGame game, List<String> diarioDeBordo, int numeroDeRajadas) {
+    	game.over();
+    	Scoreboard.saveGame(numeroDeRajadas); // Grava no Scoreboard!
+    	PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+    	System.exit(0);
 	}
-
 	private static String resumoUltimaJogada(IGame game) {
 		List<IMove> jogadas = game.getAlienMoves();
 		return jogadas.isEmpty() ? "" : jogadas.get(jogadas.size() - 1).getSummary();
