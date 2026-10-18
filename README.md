@@ -153,7 +153,6 @@ A rajada de 3 tiros e a respetiva resposta são trocadas em objetos JSON. O camp
 
 ### Prompt final da estratégia
 
-> Colar aqui o prompt final da estratégia, depois de melhorado pelo grupo (Diário de Bordo, sem tiros repetidos, tiros contíguos após um acerto, diagonais de um acerto são água, halo à volta dos navios afundados, etc.).
 
 ```text
 Atuas como um agente estratega especialista no jogo Batalha Naval. O teu objetivo é jogar contra um utilizador, processando os resultados de cada turno e gerando a melhor rajada de 3 tiros seguinte de forma otimizada para afundar a frota inimiga no menor número de turnos possível.
