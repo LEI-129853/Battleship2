@@ -109,7 +109,7 @@ public class Tasks {
 							System.out.println("\n========================================");
 							System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 							System.out.println("========================================");
-							terminaJogo(game, diarioDeBordo);
+							terminaJogo(game, diarioDeBordo, numeroDeRajadas);
 						}
 					}
 					break;
@@ -134,7 +134,7 @@ public class Tasks {
 							System.out.println("\n========================================");
 							System.out.println("⏱️  Tempo total de jogo (Simulação): " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 							System.out.println("========================================");
-              terminaJogo(game, diarioDeBordo);
+              terminaJogo(game, diarioDeBordo, numeroDeRajadas);
 						}
 					}
 					break;
