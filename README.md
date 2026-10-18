@@ -118,11 +118,10 @@ Cada membro do grupo implementa um requisito diferente, num ramo próprio (com o
 
 | Requisito | Biblioteca (Maven Central) | Ramo | Issue | Estado |
 | :--- | :--- | :--- | :---: | :---: |
-| Exportar o histórico de jogadas para PDF | `org.apache.pdfbox:pdfbox` | `feature-129853-pdf` | #1 | 🚧 |
-| Scoreboard dos jogos passados | `com.h2database:h2` | `feature-129850-scoreboard` | #2 | 🚧 |
-| Relógio com o tempo gasto em cada jogada | `com.google.guava:guava` | `feature-129820-tempo` | #3 | 🚧 |
+| Exportar o histórico de jogadas para PDF | `org.apache.pdfbox:pdfbox` | `feature-129853-pdf` | #1 | ✅  |
+| Scoreboard dos jogos passados | `com.h2database:h2` | `feature-129850-scoreboard` | #2 | ✅  |
+| Relógio com o tempo gasto em cada jogada | `com.google.guava:guava` | `feature-129820-tempo` | #3 | ✅  |
 
-> Atualizar a coluna "Estado" (✅ concluído) à medida que os pull requests forem fundidos.
 
 ---
 
