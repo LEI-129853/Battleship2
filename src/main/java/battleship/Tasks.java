@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.time.StopWatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The type Tasks.
@@ -52,8 +54,16 @@ public class Tasks {
 
 		menuHelp();
 
+		// 1. Cronómetro total da partida
+		StopWatch tempoTotal = StopWatch.createStarted();
+		// 2. Cronómetro individual por jogada
+		StopWatch tempoJogada = new StopWatch();
+
 		System.out.print("> ");
 		Scanner in = new Scanner(System.in);
+
+		// Inicia a contar o tempo que demoras a pensar e a digitar
+		tempoJogada.start();
 		String command = in.next();
 
 		while (!command.equals(DESISTIR)) {
@@ -85,6 +95,10 @@ public class Tasks {
 					if (game != null) {
 						numeroDeRajadas++; // Incrementa as rajadas efetuadas
 						game.readEnemyFire(in);
+
+						// Pára o tempo assim que a rajada é lida e os tiros processados
+						tempoJogada.stop();
+						System.out.println("⏱️  Tempo desta jogada: " + tempoJogada.getTime(TimeUnit.SECONDS) + " segundo(s).\n");
 						numeroDeRajadas++;
 						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
 
@@ -92,6 +106,10 @@ public class Tasks {
 						game.printMyBoard(true, false);
 
 						if (game.getRemainingShips() == 0) {
+							tempoTotal.stop();
+							System.out.println("\n========================================");
+							System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
+							System.out.println("========================================");
 							terminaJogo(game, diarioDeBordo);
 						}
 					}
@@ -112,7 +130,14 @@ public class Tasks {
 								Thread.currentThread().interrupt();
 							}
 						}
-						terminaJogo(game, diarioDeBordo);
+
+						if (game.getRemainingShips() == 0) {
+							tempoTotal.stop();
+							System.out.println("\n========================================");
+							System.out.println("⏱️  Tempo total de jogo (Simulação): " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
+							System.out.println("========================================");
+              terminaJogo(game, diarioDeBordo);
+						}
 					}
 					break;
 				case TIROS:
@@ -124,6 +149,7 @@ public class Tasks {
 						System.out.println("Ainda não há rajadas para exportar.");
 					else
 						PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+          break;
 				case SCOREBOARD:
 					Scoreboard.showScoreboard(); // Exibe os resultados anteriores
 					break;
@@ -133,10 +159,19 @@ public class Tasks {
 				default:
 					System.out.println("Que comando é esse??? Repete ...");
 			}
+
+			// Reinicia o cronómetro para voltar a medir a PRÓXIMA jogada
+			tempoJogada.reset();
 			System.out.print("> ");
+			tempoJogada.start();
 			command = in.next();
 		}
 
+		// Parar o cronómetro total caso o utilizador digite "desisto"
+		tempoTotal.stop();
+		System.out.println("\n========================================");
+		System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
+		System.out.println("========================================");
 		// O jogador desistiu: exporta o PDF das rajadas já feitas
 		if (!diarioDeBordo.isEmpty()) {
 			PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
@@ -154,9 +189,6 @@ public class Tasks {
 		return jogadas.isEmpty() ? "" : jogadas.get(jogadas.size() - 1).getSummary();
 	}
 
-	/**
-	 * This function provides help information about the menu commands.
-	 */
 	public static void menuHelp() {
 		System.out.println("======================= AJUDA DO MENU =========================");
 		System.out.println("Digite um dos comandos abaixo para interagir com o jogo:");
@@ -180,11 +212,9 @@ public class Tasks {
 	 * @return The fleet that has been built
 	 */
 	public static Fleet buildFleet(Scanner in) {
-
 		assert in != null;
-
 		Fleet fleet = new Fleet();
-		int i = 0; // i represents the total of successfully created ships
+		int i = 0;
 		while (i < Fleet.FLEET_SIZE) {
 			IShip s = readShip(in);
 			if (s != null) {
@@ -201,16 +231,8 @@ public class Tasks {
 		return fleet;
 	}
 
-	/**
-	 * This operation reads data about a ship, build it and returns it
-	 *
-	 * @param in The scanner to read from
-	 * @return The created ship based on the data that has been read
-	 */
 	public static Ship readShip(Scanner in) {
-
 		assert in != null;
-
 		String shipKind = in.next();
 		Position pos = readPosition(in);
 		char c = in.next().charAt(0);
@@ -218,57 +240,38 @@ public class Tasks {
 		return Ship.buildShip(shipKind, bearing, pos);
 	}
 
-	/**
-	 * This operation allows reading a position in the map
-	 *
-	 * @param in The scanner to read from
-	 * @return The position that has been read
-	 */
 	public static Position readPosition(Scanner in) {
-
 		assert in != null;
-
 		int row = in.nextInt();
 		int column = in.nextInt();
 		return new Position(row, column);
 	}
 
-	/**
-	 * This operation allows reading a position in the map
-	 *
-	 * @param in The scanner to read from
-	 * @return The classic position that has been read
-	 */
 	public static IPosition readClassicPosition(@NotNull Scanner in) {
-		// Verifica se ainda há tokens disponíveis
 		if (!in.hasNext()) {
 			throw new IllegalArgumentException("Nenhuma posição válida encontrada!");
 		}
 
-		String part1 = in.next(); // Primeiro token
+		String part1 = in.next();
 		String part2 = null;
 
 		if (in.hasNextInt()) {
-			part2 = in.next(); // Segundo token, se disponível
+			part2 = in.next();
 		}
 
 		String input = (part2 != null) ? part1 + part2 : part1;
-
-		// Normalizar o input para tratar letras maiúsculas e minúsculas
 		input = input.toUpperCase();
 
-		// Verificar os dois formatos possíveis: compactos e com espaço
 		if (input.matches("[A-Z]\\d+")) {
-			char column = input.charAt(0); // Extrair a coluna
-			int row = Integer.parseInt(input.substring(1)); // Extrair a linha
+			char column = input.charAt(0);
+			int row = Integer.parseInt(input.substring(1));
 			return new Position(column, row);
 		} else if (part2 != null && part1.matches("[A-Z]") && part2.matches("\\d+")) {
-			char column = part1.charAt(0); // Extrair a coluna
-			int row = Integer.parseInt(part2); // Extrair a linha
+			char column = part1.charAt(0);
+			int row = Integer.parseInt(part2);
 			return new Position(column, row);
 		} else {
 			throw new IllegalArgumentException("Formato inválido. Use 'A3', 'A 3' ou similar.");
 		}
 	}
-
 }

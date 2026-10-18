@@ -141,6 +141,12 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Dependência adicionada para o PR #4 (Dinis - Medição de Tempo) -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.17.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
