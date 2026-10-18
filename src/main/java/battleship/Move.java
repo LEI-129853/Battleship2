@@ -19,12 +19,18 @@ public class Move implements IMove {
 	private final int number;
 	private final List<IPosition> shots;
 	private final List<IGame.ShotResult> shotResults;
+	private String summary = ""; // NOVO
 
 	//-------------------------------------------------------------------
 	public Move(int moveNumber, List<IPosition> moveShots, List<IGame.ShotResult> moveResults) {
 		this.number = moveNumber;
 		this.shots = moveShots;
 		this.shotResults = moveResults;
+	}
+
+	@Override
+	public String getSummary() {
+		return this.summary;
 	}
 
 	@Override
@@ -49,6 +55,12 @@ public class Move implements IMove {
 	@Override
 	public List<IGame.ShotResult> getShotResults() {
 		return this.shotResults;
+	}
+
+	// NOVO
+	@Override
+	public String getSummary() {
+		return this.summary;
 	}
 
 	/**
@@ -97,6 +109,27 @@ public class Move implements IMove {
 
 		// Determinar número de tiros fora do tabuleiro
 		int outsideShots = Game.NUMBER_SHOTS - validShots - repeatedShots;
+
+		// NOVO: resumo para o diário de bordo (PDF)
+		List<String> partes = new ArrayList<>();
+		if (missedShots > 0) {
+			partes.add(missedShots + (missedShots == 1 ? " Tiro na Água" : " Tiros na Água"));
+		}
+		for (Map.Entry<String, Integer> entry : hitsPerBoat.entrySet()) {
+			if (!sunkBoatsCount.containsKey(entry.getKey())) {
+				partes.add(entry.getValue() + (entry.getValue() == 1 ? " Tiro na " : " Tiros na ") + entry.getKey());
+			}
+		}
+		for (Map.Entry<String, Integer> entry : sunkBoatsCount.entrySet()) {
+			partes.add(entry.getValue() + " " + entry.getKey() + " ao fundo");
+		}
+		if (repeatedShots > 0) {
+			partes.add(repeatedShots + (repeatedShots == 1 ? " Tiro Repetido" : " Tiros Repetidos"));
+		}
+		if (outsideShots > 0) {
+			partes.add(outsideShots + (outsideShots == 1 ? " Tiro Exterior" : " Tiros Exteriores"));
+		}
+		this.summary = partes.isEmpty() ? "Tiros Inválidos" : String.join(", ", partes);
 
 		if (verbose) {
 			// Construção da mensagem de saída
@@ -150,8 +183,10 @@ public class Move implements IMove {
 				output.append(outsideShots).append(" tiro").append(outsideShots > 1 ? "s" : "").append(" exterior").append(outsideShots > 1 ? "es" : "");
 			}
 
+			this.summary = output.toString();
+
 			// Imprimir na consola se verbose for true
-			System.out.println("Jogada nº" + this.number + " -> " + output);
+			System.out.println("Jogada nº" + this.number + " -> " + this.summary);
 		}
 
 		// Criar o mapa para o JSON

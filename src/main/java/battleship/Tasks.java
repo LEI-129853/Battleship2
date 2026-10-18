@@ -1,6 +1,8 @@
 package battleship;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +36,9 @@ public class Tasks {
 	private static final String MAPA = "mapa";
 	private static final String STATUS = "estado";
 	private static final String SIMULA = "simula";
+	private static final String PDF_FILE = "jogadas.pdf";
+	private static final String PDF = "pdf";
+	private static final String SCOREBOARD = "scoreboard"; // Novo comando adicionado
 
 	/**
 	 * This task also tests the fighting element of a round of three shots
@@ -42,6 +47,11 @@ public class Tasks {
 
 		IFleet myFleet = null;
 		IGame game = null;
+
+		// Diário de bordo: uma linha por rajada, usada no PDF
+		List<String> diarioDeBordo = new ArrayList<>();
+		int numeroDeRajadas = 0;
+
 		menuHelp();
 
 		// 1. Cronómetro total da partida
@@ -62,11 +72,15 @@ public class Tasks {
 				case GERAFROTA:
 					myFleet = Fleet.createRandom();
 					game = new Game(myFleet);
+					numeroDeRajadas = 0;      // novo jogo: reinicia o contador
+					diarioDeBordo.clear();    // e o diário de bordo
 					game.printMyBoard(false, true);
 					break;
 				case LEFROTA:
 					myFleet = buildFleet(in);
 					game = new Game(myFleet);
+					numeroDeRajadas = 0;
+					diarioDeBordo.clear();
 					game.printMyBoard(false, true);
 					break;
 				case STATUS:
@@ -79,11 +93,14 @@ public class Tasks {
 					break;
 				case RAJADA:
 					if (game != null) {
+						numeroDeRajadas++; // Incrementa as rajadas efetuadas
 						game.readEnemyFire(in);
 
 						// Pára o tempo assim que a rajada é lida e os tiros processados
 						tempoJogada.stop();
 						System.out.println("⏱️  Tempo desta jogada: " + tempoJogada.getTime(TimeUnit.SECONDS) + " segundo(s).\n");
+						numeroDeRajadas++;
+						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
 
 						myFleet.printStatus();
 						game.printMyBoard(true, false);
@@ -93,15 +110,18 @@ public class Tasks {
 							System.out.println("\n========================================");
 							System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 							System.out.println("========================================");
-							game.over();
-							System.exit(0);
+							terminaJogo(game, diarioDeBordo);
 						}
 					}
 					break;
 				case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
+							numeroDeRajadas++; // Incrementa as rajadas na simulação
 							game.randomEnemyFire();
+							numeroDeRajadas++;
+							diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Automática): " + resumoUltimaJogada(game));
+
 							myFleet.printStatus();
 							game.printMyBoard(true, false);
 							try {
@@ -116,14 +136,22 @@ public class Tasks {
 							System.out.println("\n========================================");
 							System.out.println("⏱️  Tempo total de jogo (Simulação): " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 							System.out.println("========================================");
-							game.over();
-							System.exit(0);
+              terminaJogo(game, diarioDeBordo);
 						}
 					}
 					break;
 				case TIROS:
 					if (game != null)
 						game.printMyBoard(true, true);
+					break;
+				case PDF:
+					if (diarioDeBordo.isEmpty())
+						System.out.println("Ainda não há rajadas para exportar.");
+					else
+						PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+          break;
+				case SCOREBOARD:
+					Scoreboard.showScoreboard(); // Exibe os resultados anteriores
 					break;
 				case AJUDA:
 					menuHelp();
@@ -144,7 +172,21 @@ public class Tasks {
 		System.out.println("\n========================================");
 		System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 		System.out.println("========================================");
+		// O jogador desistiu: exporta o PDF das rajadas já feitas
+		if (!diarioDeBordo.isEmpty()) {
+			PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+		}
 		System.out.println(GOODBYE_MESSAGE);
+	}
+	private static void terminaJogo(IGame game, List<String> diarioDeBordo) {
+		game.over();
+		PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+		System.exit(0);
+	}
+
+	private static String resumoUltimaJogada(IGame game) {
+		List<IMove> jogadas = game.getAlienMoves();
+		return jogadas.isEmpty() ? "" : jogadas.get(jogadas.size() - 1).getSummary();
 	}
 
 	public static void menuHelp() {
@@ -157,10 +199,18 @@ public class Tasks {
 		System.out.println("- " + RAJADA + ": Realiza uma rajada de disparos.");
 		System.out.println("- " + SIMULA + ": Simula um jogo completo.");
 		System.out.println("- " + TIROS + ": Lista os tiros válidos realizados (* = tiro em navio, o = tiro na água)");
+		System.out.println("- " + PDF + ": Exporta o diário de bordo das rajadas para " + PDF_FILE + ".");
+		System.out.println("- " + SCOREBOARD + ": Consulta o histórico de jogos passados (rajadas/data).");
 		System.out.println("- " + DESISTIR + ": Encerra o jogo.");
 		System.out.println("===============================================================");
 	}
 
+	/**
+	 * This operation allows the build up of a fleet, given user data
+	 *
+	 * @param in The scanner to read from
+	 * @return The fleet that has been built
+	 */
 	public static Fleet buildFleet(Scanner in) {
 		assert in != null;
 		Fleet fleet = new Fleet();
