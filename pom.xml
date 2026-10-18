@@ -134,7 +134,7 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Apache Commons Lang3 (Dependencia Dinis - Medicao de tempo) -->
+		<!-- Dependência adicionada para o PR #4 (Dinis - Medição de Tempo) -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
