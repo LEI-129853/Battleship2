@@ -19,12 +19,18 @@ public class Move implements IMove {
 	private final int number;
 	private final List<IPosition> shots;
 	private final List<IGame.ShotResult> shotResults;
+	private String summary;
 
 	//-------------------------------------------------------------------
 	public Move(int moveNumber, List<IPosition> moveShots, List<IGame.ShotResult> moveResults) {
 		this.number = moveNumber;
 		this.shots = moveShots;
 		this.shotResults = moveResults;
+	}
+
+	@Override
+	public String getSummary() {
+		return this.summary;
 	}
 
 	@Override
@@ -150,8 +156,10 @@ public class Move implements IMove {
 				output.append(outsideShots).append(" tiro").append(outsideShots > 1 ? "s" : "").append(" exterior").append(outsideShots > 1 ? "es" : "");
 			}
 
+			this.summary = output.toString();
+
 			// Imprimir na consola se verbose for true
-			System.out.println("Jogada nº" + this.number + " -> " + output);
+			System.out.println("Jogada nº" + this.number + " -> " + this.summary);
 		}
 
 		// Criar o mapa para o JSON
