@@ -34,5 +34,7 @@ public interface IMove {
 
 	String processEnemyFire(boolean verbose);
 
-	default String getSummary() { return ""; }
+	default String getSummary() {
+		return "";
+	}
 }

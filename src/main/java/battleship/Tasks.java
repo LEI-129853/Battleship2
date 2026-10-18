@@ -36,6 +36,7 @@ public class Tasks {
 	private static final String SIMULA = "simula";
 	private static final String PDF_FILE = "jogadas.pdf";
 	private static final String PDF = "pdf";
+	private static final String SCOREBOARD = "scoreboard"; // Novo comando adicionado
 
 	/**
 	 * This task also tests the fighting element of a round of three shots
@@ -82,6 +83,7 @@ public class Tasks {
 					break;
 				case RAJADA:
 					if (game != null) {
+						numeroDeRajadas++; // Incrementa as rajadas efetuadas
 						game.readEnemyFire(in);
 						numeroDeRajadas++;
 						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
@@ -96,7 +98,8 @@ public class Tasks {
 					break;
 				case SIMULA:
 					if (game != null) {
-						while (game.getRemainingShips() > 0) {
+						while (game.getRemainingShips() > 0){
+							numeroDeRajadas++; // Incrementa as rajadas na simulação
 							game.randomEnemyFire();
 							numeroDeRajadas++;
 							diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Automática): " + resumoUltimaJogada(game));
@@ -121,6 +124,8 @@ public class Tasks {
 						System.out.println("Ainda não há rajadas para exportar.");
 					else
 						PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+				case SCOREBOARD:
+					Scoreboard.showScoreboard(); // Exibe os resultados anteriores
 					break;
 				case AJUDA:
 					menuHelp();
@@ -163,9 +168,11 @@ public class Tasks {
 		System.out.println("- " + SIMULA + ": Simula um jogo completo.");
 		System.out.println("- " + TIROS + ": Lista os tiros válidos realizados (* = tiro em navio, o = tiro na água)");
 		System.out.println("- " + PDF + ": Exporta o diário de bordo das rajadas para " + PDF_FILE + ".");
+		System.out.println("- " + SCOREBOARD + ": Consulta o histórico de jogos passados (rajadas/data).");
 		System.out.println("- " + DESISTIR + ": Encerra o jogo.");
 		System.out.println("===============================================================");
 	}
+
 	/**
 	 * This operation allows the build up of a fleet, given user data
 	 *
