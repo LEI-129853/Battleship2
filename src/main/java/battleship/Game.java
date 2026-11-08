@@ -452,15 +452,4 @@ public class Game implements IGame
 			System.out.println("| Maldito sejas, Java Sparrow, eu voltarei, glub glub glub ... |");
 			System.out.println("+--------------------------------------------------------------+");
 	}
-	public void testeSmell(int a) {
-		if (a > 0) {
-			if (a > 1) {
-				if (a > 2) {
-					if (a > 3) {
-						a++;
-					}
-				}
-			}
-		}
-	}
 }
