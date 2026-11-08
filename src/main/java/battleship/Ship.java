@@ -71,7 +71,8 @@ public abstract class Ship implements IShip
         }
         return s;
     }
-
+	public void testeSmell(int a, int b, int c, int d) {
+	}
     //---------------------------------------------------------
 
 	/**
