@@ -452,5 +452,5 @@ public class Game implements IGame
 			System.out.println("| Maldito sejas, Java Sparrow, eu voltarei, glub glub glub ... |");
 			System.out.println("+--------------------------------------------------------------+");
 	}
-	public void Calcular_Pontos() { }
+	public void calcularPontos() { }
 }
