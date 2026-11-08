@@ -1,0 +1,21 @@
+# 129851 - Duarte
+name: Checkstyle 129851
+on:
+  pull_request:
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+jobs:
+  checkstyle:
+    name: Checkstyle 129851
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dbelyaev/action-checkstyle@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checkstyle_config: checkstyle-129851.xml
+          reporter: github-pr-check
+          level: error
+          fail_level: error
