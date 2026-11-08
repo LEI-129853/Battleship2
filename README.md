@@ -342,6 +342,15 @@ Os JARs ficam guardados no repositório local (`~/.m2`) na primeira compilação
 
 ---
 
+## 🔍 Qualidade de código
+
+| Entrega | Daniel (129853) | Dinis (129820) | Duarte (129851) |
+| :--- | :--- | :--- | :--- |
+| Métricas (Excel) | [Excel](CodeMetrics/LEI-129853-Metrics.xlsx) | [Excel](CodeMetrics/LEI-129820-Metrics.xlsx) | [Excel](CodeMetrics/LEI-129851-Metrics.xlsx) |
+| Qodana (cheiro) | [Long Method](qodana/README-129853.md) | [Long Parameter List](qodana/README-129820.md) | [Large Class](qodana/README-129851.md) |
+
+Comentários à análise Qodana: [qodana/Comentarios-Qodana-129853.md](qodana/Comentarios-Qodana-129853.md)
+
 ## 🙏 Créditos
 
 Projeto base: [britoeabreu/Battleship2](https://github.com/britoeabreu/Battleship2), criado para os estudantes de Engenharia de Software do Iscte-IUL.
