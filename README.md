@@ -347,9 +347,10 @@ Os JARs ficam guardados no repositório local (`~/.m2`) na primeira compilação
 | Entrega | Daniel (129853) | Dinis (129820) | Duarte (129851) |
 | :--- | :--- | :--- | :--- |
 | Métricas (Excel) | [Excel](CodeMetrics/LEI-129853-Metrics.xlsx) | [Excel](CodeMetrics/LEI-129820-Metrics.xlsx) | [Excel](CodeMetrics/LEI-129851-Metrics.xlsx) |
-| Qodana (cheiro) | [Long Method](qodana/README-129853.md) | [Long Parameter List](qodana/README-129820.md) | [Large Class](qodana/README-129851.md) |
+| Qodana (cheiro) | [Long Method](Qodana/README-129853.md) | [Long Parameter List](Qodana/README-129820.md) | [Large Class](Qodana/README-129851.md) |
+| Checkstyle (nomes) | [MethodName](Checkstyle/README-129853.md) | [ConstantName](Checkstyle/README-129820.md) | [MemberName](Checkstyle/README-129851.md) |
 
-Comentários à análise Qodana: [qodana/Comentarios-Qodana-129853.md](qodana/Comentarios-Qodana-129853.md)
+Comentários à análise Qodana: [Qodana/Comentarios-Qodana-129853.md](Qodana/Comentarios-Qodana-129853.md)
 
 ## 🙏 Créditos
 
