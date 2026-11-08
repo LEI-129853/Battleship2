@@ -16,6 +16,7 @@ public class Scoreboard {
     private static final String DB_URL = "jdbc:h2:./data/scoreboard";
     private static final String USER = "sa";
     private static final String PASS = "";
+    private int Total_Pontos;
 
     /**
      * Garante que a tabela JOGOS existe antes de qualquer operação.
