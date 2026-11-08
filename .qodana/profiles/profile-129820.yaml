@@ -1,0 +1,13 @@
+# 129820 - Dinis
+profile:
+  base:
+    name: empty
+  inspections:
+    - inspection: ParametersPerMethod
+      enabled: true
+      options:
+        m_limit: 3
+    - inspection: ParametersPerConstructor
+      enabled: true
+      options:
+        m_limit: 3
