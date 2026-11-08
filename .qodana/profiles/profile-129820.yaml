@@ -1,8 +1,0 @@
-# 129820 - Dinis
-name: "Dinis - Long Parameter List"
-baseProfile: empty
-inspections:
-  - inspection: MethodWithTooManyParameters
-    enabled: true
-    options:
-      m_limit: 3
