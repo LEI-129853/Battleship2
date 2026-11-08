@@ -1,0 +1,17 @@
+# 129853 - Daniel
+profile:
+  base:
+    name: empty
+  inspections:
+    - inspection: NonCommentSourceStatements
+      enabled: true
+      options:
+        m_limit: 25
+    - inspection: CyclomaticComplexity
+      enabled: true
+      options:
+        m_limit: 5
+    - inspection: NestingDepth
+      enabled: true
+      options:
+        m_limit: 3
