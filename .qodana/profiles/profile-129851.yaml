@@ -1,15 +1,14 @@
 # 129851 - Duarte
-profile:
-  base:
-    name: empty
-  inspections:
-    - inspection: MethodCount
-      enabled: true
-      options:
-        m_limit: 15
-        ignoreGettersAndSetters: false
-        ignoreOverridingMethods: false
-    - inspection: ClassComplexity
-      enabled: true
-      options:
-        m_limit: 47
+name: "Duarte - Large Class"
+baseProfile: empty
+inspections:
+  - inspection: MethodCount
+    enabled: true
+    options:
+      m_limit: 15
+      ignoreGettersAndSetters: false
+      ignoreOverridingMethods: false
+  - inspection: ClassComplexity
+    enabled: true
+    options:
+      m_limit: 47
