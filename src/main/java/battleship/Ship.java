@@ -71,7 +71,7 @@ public abstract class Ship implements IShip
         }
         return s;
     }
-
+private static final int maxShips = 10;
     //---------------------------------------------------------
 
 	/**
