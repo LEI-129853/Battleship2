@@ -71,7 +71,6 @@ public abstract class Ship implements IShip
         }
         return s;
     }
-
     //---------------------------------------------------------
 
 	/**
