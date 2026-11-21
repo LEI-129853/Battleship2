@@ -1,10 +1,6 @@
 package battleship;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -26,12 +22,16 @@ public class Scoreboard {
                 "rajadas INTEGER, " +
                 "data_jogo VARCHAR(255))";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
         } catch (Exception e) {
             System.err.println("Erro ao inicializar base de dados: " + e.getMessage());
         }
+    }
+
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Scoreboard {
         initDatabase();
         String sql = "INSERT INTO JOGOS (rajadas, data_jogo) VALUES (?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, rajadas);
@@ -62,7 +62,7 @@ public class Scoreboard {
         initDatabase();
         String sql = "SELECT rajadas, data_jogo FROM JOGOS ORDER BY id DESC";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
