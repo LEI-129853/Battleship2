@@ -23,3 +23,5 @@ testes a passar antes e depois de cada uma, e um commit por refabricação.
 | Game::printBoard, printMyBoard, printAlienBoard (parâmetros `show_shots`, `show_legend`) | Convenção de nomes (snake_case) | Rename | 129851 |
 | Game::fireSingleShot (`!ship.stillFloating()` avaliado 2×) | Expressão duplicada | Introduce Variable | 129851 |
 | Game::getRemainingShips (variável local `floatingShips` usada uma vez) | Variável redundante | Inline Variable | 129851 |
+| Move::processEnemyFire (contagem, resumo e mensagem detalhada) | Long Method / Large Class | Replace Method with Method Object (classe interna ShotReport) | 129853 |
+| Move::processEnemyFire (operadores ?: repetidos para singular/plural) | Duplicated Code | Extract Method (ShotReport::plural) | 129853 |
