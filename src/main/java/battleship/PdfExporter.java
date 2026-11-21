@@ -16,10 +16,12 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
  */
 public class PdfExporter {
 
+    public static final int MIN_PRINTABLE_CHAR = 32;
     private static final String TITLE = "Relatório do Diário de Bordo - Batalha Naval";
     private static final float MARGIN = 50f;
     private static final float LINE_HEIGHT = 18f;
     private static final float FONT_SIZE = 12f;
+    public static final int MAX_LATIN1_CHAR = 255;
 
     private PdfExporter() {
     }
@@ -75,7 +77,7 @@ public class PdfExporter {
     private static String sanitize(String text) {
         StringBuilder sb = new StringBuilder();
         for (char c : text.toCharArray()) {
-            if (c >= 32 && c <= 255) {
+            if (c >= MIN_PRINTABLE_CHAR && c <= MAX_LATIN1_CHAR) {
                 sb.append(c);
             }
         }
