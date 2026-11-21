@@ -355,3 +355,12 @@ Comentários à análise Qodana: [Qodana/Comentarios-Qodana-129853.md](Qodana/Co
 ## 🙏 Créditos
 
 Projeto base: [britoeabreu/Battleship2](https://github.com/britoeabreu/Battleship2), criado para os estudantes de Engenharia de Software do Iscte-IUL.
+
+## Testes automáticos (GitHub Actions)
+
+O workflow `.github/workflows/maven.yml` ("Java CI with Maven") compila o projeto
+com o JDK 21 e executa a bateria de testes JUnit (`mvn verify`) sempre que é feito:
+- push para o `main` ou para os ramos `UnitTests_*` e `Refactoring_*`;
+- pull request para o `main`.
+
+Se algum teste falhar, o workflow fica vermelho e o PR não deve ser aceite.
