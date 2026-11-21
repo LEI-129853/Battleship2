@@ -6,18 +6,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 /**
- * Test class for the Galleon class.
- * Author: ${user.name}
- * Date: ${current_date}
- * Time: ${current_time}
- * Cyclomatic Complexity for each method:
- * - Constructor: 5
- * - stillFloating: 2
- * - getPositions: 2
- * - getTopMostPos: 2
- * - getBottomMostPos: 2
- * - getLeftMostPos: 2
- * - getRightMostPos: 2
+ * Test class for class Galleon.
+ * Author: LEI-129851
+ * Date: 2026-11-21
+ * Cyclomatic Complexity:
+ * - constructor: 5 (switch over 4 bearings)
+ * - fillNorth() (private): 2
+ * - fillSouth() (private): 3
+ * - fillEast() (private): 2
+ * - fillWest() (private): 2
+ * - getSize(): 1
+ * - stillFloating(): 3 (inherited from Ship)
+ * - getTopMostPos(), getBottomMostPos(), getLeftMostPos(), getRightMostPos(): 3 (inherited from Ship)
+ * Note: the switch over the Compass enum has an implicit default branch that is unreachable
+ *       (Compass has only 4 values and a null bearing is rejected by Ship's constructor).
  */
 public class GalleonTest {
 
@@ -38,6 +40,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 5
 	 */
 	@Test
+	@DisplayName("constructor: rumo NORTH")
 	void testConstructorNorth() {
 		List<IPosition> positions = galleon.getPositions();
 		assertNotNull(galleon, "Error: Galleon instance should not be null.");
@@ -53,6 +56,7 @@ public class GalleonTest {
 	 * Test for the constructor with SOUTH direction.
 	 */
 	@Test
+	@DisplayName("constructor: rumo SOUTH")
 	void testConstructorSouth() {
 		Galleon southGalleon = new Galleon(Compass.SOUTH, new Position(5, 5));
 		List<IPosition> positions = southGalleon.getPositions();
@@ -70,6 +74,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 2
 	 */
 	@Test
+	@DisplayName("stillFloating: navio intacto continua a flutuar")
 	void testStillFloating1() {
 		assertTrue(galleon.stillFloating(), "Error: Galleon should initially be floating.");
 	}
@@ -78,6 +83,7 @@ public class GalleonTest {
 	 * Test for the stillFloating method (all positions hit).
 	 */
 	@Test
+	@DisplayName("stillFloating: navio com uma posição atingida continua a flutuar")
 	void testStillFloating2() {
 		galleon.getPositions().forEach(pos -> pos.shoot());
 		assertFalse(galleon.stillFloating(), "Error: Galleon should not float when all positions are hit.");
@@ -88,6 +94,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 2
 	 */
 	@Test
+	@DisplayName("getTopMostPos: devolve a linha mais acima")
 	void testGetTopMostPos() {
 		assertEquals(5, galleon.getTopMostPos(), "Error: The topmost position should be 5.");
 	}
@@ -97,6 +104,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 2
 	 */
 	@Test
+	@DisplayName("getBottomMostPos: devolve a linha mais abaixo")
 	void testGetBottomMostPos() {
 		assertEquals(7, galleon.getBottomMostPos(), "Error: The bottommost position should be 7.");
 	}
@@ -106,6 +114,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 2
 	 */
 	@Test
+	@DisplayName("getLeftMostPos: devolve a coluna mais à esquerda")
 	void testGetLeftMostPos() {
 		assertEquals(5, galleon.getLeftMostPos(), "Error: The leftmost position should be 5.");
 	}
@@ -115,6 +124,7 @@ public class GalleonTest {
 	 * Cyclomatic Complexity: 2
 	 */
 	@Test
+	@DisplayName("getRightMostPos: devolve a coluna mais à direita")
 	void testGetRightMostPos() {
 		assertEquals(7, galleon.getRightMostPos(), "Error: The rightmost position should be 7.");
 	}
@@ -123,6 +133,7 @@ public class GalleonTest {
 	 * Test for the constructor with invalid input.
 	 */
 	@Test
+	@DisplayName("constructor: rumo ou posição nulos lançam NullPointerException")
 	void testConstructorWithInvalidInput() {
 		assertThrows(NullPointerException.class, () -> new Galleon(null, null),
 				"Error: NullPointerException should have been thrown for null input.");
@@ -134,6 +145,7 @@ public class GalleonTest {
 	 * Test for the constructor with EAST direction.
 	 */
 	@Test
+	@DisplayName("constructor: rumo EAST")
 	void testConstructorEast() {
 		Galleon eastGalleon = new Galleon(Compass.EAST, new Position(5, 5));
 		List<IPosition> positions = eastGalleon.getPositions();
@@ -150,6 +162,7 @@ public class GalleonTest {
 	 * Test for the constructor with WEST direction.
 	 */
 	@Test
+	@DisplayName("constructor: rumo WEST")
 	void testConstructorWest() {
 		Galleon westGalleon = new Galleon(Compass.WEST, new Position(5, 5));
 		List<IPosition> positions = westGalleon.getPositions();
