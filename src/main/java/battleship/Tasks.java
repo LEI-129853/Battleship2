@@ -39,6 +39,7 @@ public class Tasks {
 	private static final String PDF_FILE = "jogadas.pdf";
 	private static final String PDF = "pdf";
 	private static final String SCOREBOARD = "scoreboard"; // Novo comando adicionado
+	public static final String CLASSIC_POSITION_REGEX = "[A-Z]\\d+";
 
 	/**
 	 * This task also tests the fighting element of a round of three shots
@@ -262,7 +263,7 @@ public class Tasks {
 		String input = (part2 != null) ? part1 + part2 : part1;
 		input = input.toUpperCase();
 
-		if (input.matches("[A-Z]\\d+")) {
+		if (input.matches(CLASSIC_POSITION_REGEX)) {
 			char column = input.charAt(0);
 			int row = Integer.parseInt(input.substring(1));
 			return new Position(column, row);
