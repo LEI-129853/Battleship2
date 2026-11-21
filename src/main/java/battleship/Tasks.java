@@ -105,10 +105,7 @@ public class Tasks {
 						game.printMyBoard(true, false);
 
 						if (game.getRemainingShips() == 0) {
-							tempoTotal.stop();
-							System.out.println("\n========================================");
-							System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
-							System.out.println("========================================");
+							imprimeTempoTotal(tempoTotal);
 							terminaJogo(game, diarioDeBordo, numeroDeRajadas);
 						}
 					}
@@ -166,16 +163,21 @@ public class Tasks {
 		}
 
 		// Parar o cronómetro total caso o utilizador digite "desisto"
-		tempoTotal.stop();
-		System.out.println("\n========================================");
-		System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
-		System.out.println("========================================");
+		imprimeTempoTotal(tempoTotal);
 		// O jogador desistiu: exporta o PDF das rajadas já feitas
 		if (!diarioDeBordo.isEmpty()) {
 			PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
 		}
 		System.out.println(GOODBYE_MESSAGE);
 	}
+
+	private static void imprimeTempoTotal(StopWatch tempoTotal) {
+		tempoTotal.stop();
+		System.out.println("\n========================================");
+		System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
+		System.out.println("========================================");
+	}
+
 	private static void terminaJogo(IGame game, List<String> diarioDeBordo, int numeroDeRajadas) {
     	game.over();
     	Scoreboard.saveGame(numeroDeRajadas); // Grava no Scoreboard!
