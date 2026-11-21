@@ -29,33 +29,33 @@ public class PdfExporter {
     /**
      * Writes the log of bursts to a PDF file, one line per burst, adding pages as needed.
      *
-     * @param linhas   the lines of the log (e.g. "Rajada 1 (Manual): 2 Tiros na Água")
+     * @param lines   the lines of the log (e.g. "Rajada 1 (Manual): 2 Tiros na Água")
      * @param fileName the name of the PDF file to create
      */
-    public static void exportShots(List<String> linhas, String fileName) {
+    public static void exportShots(List<String> lines, String fileName) {
         try (PDDocument doc = new PDDocument()) {
             PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
             float top = PDRectangle.A4.getHeight() - MARGIN;
 
             PDPage page = new PDPage(PDRectangle.A4);
             doc.addPage(page);
-            PDPageContentStream cs = new PDPageContentStream(doc, page);
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
             float y = top;
 
-            y = writeLine(cs, font, TITLE, y);
+            y = writeLine(contentStream, font, TITLE, y);
             y -= LINE_HEIGHT;
 
-            for (String linha : linhas) {
+            for (String linha : lines) {
                 if (y < MARGIN) {
-                    cs.close();
+                    contentStream.close();
                     page = new PDPage(PDRectangle.A4);
                     doc.addPage(page);
-                    cs = new PDPageContentStream(doc, page);
+                    contentStream = new PDPageContentStream(doc, page);
                     y = top;
                 }
-                y = writeLine(cs, font, linha, y);
+                y = writeLine(contentStream, font, linha, y);
             }
-            cs.close();
+            contentStream.close();
 
             doc.save(new File(fileName));
             System.out.println("PDF guardado em: " + new File(fileName).getAbsolutePath());
