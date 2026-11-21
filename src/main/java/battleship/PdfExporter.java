@@ -16,10 +16,12 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
  */
 public class PdfExporter {
 
+    public static final int MIN_PRINTABLE_CHAR = 32;
     private static final String TITLE = "Relatório do Diário de Bordo - Batalha Naval";
     private static final float MARGIN = 50f;
     private static final float LINE_HEIGHT = 18f;
     private static final float FONT_SIZE = 12f;
+    public static final int MAX_LATIN1_CHAR = 255;
 
     private PdfExporter() {
     }
@@ -27,33 +29,33 @@ public class PdfExporter {
     /**
      * Writes the log of bursts to a PDF file, one line per burst, adding pages as needed.
      *
-     * @param linhas   the lines of the log (e.g. "Rajada 1 (Manual): 2 Tiros na Água")
+     * @param lines   the lines of the log (e.g. "Rajada 1 (Manual): 2 Tiros na Água")
      * @param fileName the name of the PDF file to create
      */
-    public static void exportShots(List<String> linhas, String fileName) {
+    public static void exportShots(List<String> lines, String fileName) {
         try (PDDocument doc = new PDDocument()) {
             PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
             float top = PDRectangle.A4.getHeight() - MARGIN;
 
             PDPage page = new PDPage(PDRectangle.A4);
             doc.addPage(page);
-            PDPageContentStream cs = new PDPageContentStream(doc, page);
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
             float y = top;
 
-            y = writeLine(cs, font, TITLE, y);
+            y = writeLine(contentStream, font, TITLE, y);
             y -= LINE_HEIGHT;
 
-            for (String linha : linhas) {
+            for (String linha : lines) {
                 if (y < MARGIN) {
-                    cs.close();
+                    contentStream.close();
                     page = new PDPage(PDRectangle.A4);
                     doc.addPage(page);
-                    cs = new PDPageContentStream(doc, page);
+                    contentStream = new PDPageContentStream(doc, page);
                     y = top;
                 }
-                y = writeLine(cs, font, linha, y);
+                y = writeLine(contentStream, font, linha, y);
             }
-            cs.close();
+            contentStream.close();
 
             doc.save(new File(fileName));
             System.out.println("PDF guardado em: " + new File(fileName).getAbsolutePath());
@@ -75,7 +77,7 @@ public class PdfExporter {
     private static String sanitize(String text) {
         StringBuilder sb = new StringBuilder();
         for (char c : text.toCharArray()) {
-            if (c >= 32 && c <= 255) {
+            if (c >= MIN_PRINTABLE_CHAR && c <= MAX_LATIN1_CHAR) {
                 sb.append(c);
             }
         }
