@@ -1,39 +1,37 @@
-/**
- * Author: britoeabreu
- * Date: 2023-10-10
- * Time: 15:30
- *
- * Cyclomatic Complexity:
- * - Constructor: 5
- * - getSize: 1
- */
 package battleship;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the Caravel class.
+ * Test class for class Caravel.
+ * Author: LEI-129851
+ * Date: 2026-11-21
+ * Cyclomatic Complexity:
+ * - constructor: 9 (switch over 4 bearings, each with a loop)
+ * - getSize(): 1
+ * Note: the switch over the Compass enum has an implicit default branch that is unreachable
+ *       (Compass has only 4 values and a null bearing is rejected by Ship's constructor).
  */
 @DisplayName("Tests for the Caravel class")
 class CaravelTest {
 
-	static Caravel cN, cS, cE, cW;
+	private Caravel cN, cS, cE, cW;
 
-	@BeforeAll
-	static void setUpBeforeClass() {
+	@BeforeEach
+	void setUp() {
 		cN = new Caravel(Compass.NORTH, new Position(5, 5));
 		cS = new Caravel(Compass.SOUTH, new Position(5, 5));
 		cE = new Caravel(Compass.EAST, new Position(5, 5));
 		cW = new Caravel(Compass.WEST, new Position(5, 5));
 	}
 
-	@AfterAll
-	static void tearDownAfterClass() {
+	@AfterEach
+	void tearDown() {
 		cN = null;
 		cS = null;
 		cE = null;
@@ -67,8 +65,7 @@ class CaravelTest {
 	 */
 	@Test
 	@DisplayName("Test for the constructor with SOUTH direction")
-	void
-	constructor2() {
+	void constructor2() {
 		assertNotNull(cS, "Error: The Caravel should not be null.");
 		assertEquals(Compass.SOUTH, cS.getBearing(), "Error: The Caravel's direction should be SOUTH.");
 		assertEquals(6, cS.getBottomMostPos(), "Error: The bottommost position should be 6.");
