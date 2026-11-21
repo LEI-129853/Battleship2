@@ -25,3 +25,6 @@ testes a passar antes e depois de cada uma, e um commit por refabricação.
 | Game::getRemainingShips (variável local `floatingShips` usada uma vez) | Variável redundante | Inline Variable | 129851 |
 | Move::processEnemyFire (contagem, resumo e mensagem detalhada) | Long Method / Large Class | Replace Method with Method Object (classe interna ShotReport) | 129853 |
 | Move::processEnemyFire (operadores ?: repetidos para singular/plural) | Duplicated Code | Extract Method (ShotReport::plural) | 129853 |
+| Tasks::menu (switch com 12 comandos e estado em variáveis locais) | Long Method / Switch Statements | Replace Method with Method Object (classe interna GameMenu) | 129820 |
+| Tasks::imprimeTempoTotal (bloco duplicado para a simulação) | Duplicated Code | Change Signature (parâmetro modo) | 129820 |
+| Tasks::readClassicPosition (2.º else-if inatingível) | Dead Code | Remove dead code / Simplify | 129820 |

@@ -3,6 +3,8 @@ package battleship;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,150 +44,28 @@ public class Tasks {
 	public static final String CLASSIC_POSITION_REGEX = "[A-Z]\\d+";
 
 	/**
-	 * This task also tests the fighting element of a round of three shots
+	 * This task also tests the fighting element of a round of three shots.
+	 * The game loop is implemented by {@link GameMenu} (Replace Method with Method Object):
+	 * each command is handled by its own small method instead of one long switch.
 	 */
 	public static void menu() {
-
-		IFleet myFleet = null;
-		IGame game = null;
-
-		// Diário de bordo: uma linha por rajada, usada no PDF
-		List<String> diarioDeBordo = new ArrayList<>();
-		int numeroDeRajadas = 0;
-
-		menuHelp();
-
-		// 1. Cronómetro total da partida
-		StopWatch tempoTotal = StopWatch.createStarted();
-		// 2. Cronómetro individual por jogada
-		StopWatch tempoJogada = new StopWatch();
-
-		System.out.print("> ");
-		Scanner in = new Scanner(System.in);
-
-		// Inicia a contar o tempo que demoras a pensar e a digitar
-		tempoJogada.start();
-		String command = in.next();
-
-		while (!command.equals(DESISTIR)) {
-
-			switch (command) {
-				case GERAFROTA:
-					myFleet = Fleet.createRandom();
-					game = new Game(myFleet);
-					numeroDeRajadas = 0;      // novo jogo: reinicia o contador
-					diarioDeBordo.clear();    // e o diário de bordo
-					game.printMyBoard(false, true);
-					break;
-				case LEFROTA:
-					myFleet = buildFleet(in);
-					game = new Game(myFleet);
-					numeroDeRajadas = 0;
-					diarioDeBordo.clear();
-					game.printMyBoard(false, true);
-					break;
-				case STATUS:
-					if (myFleet != null)
-						myFleet.printStatus();
-					break;
-				case MAPA:
-					if (myFleet != null)
-						game.printMyBoard(false, true);
-					break;
-				case RAJADA:
-					if (game != null) {
-						numeroDeRajadas++; // Incrementa as rajadas efetuadas
-						game.readEnemyFire(in);
-
-						// Pára o tempo assim que a rajada é lida e os tiros processados
-						tempoJogada.stop();
-						long segundosJogada = tempoJogada.getTime(TimeUnit.SECONDS);
-						System.out.println("⏱️  Tempo desta jogada: " + segundosJogada + " segundo(s).\n");
-						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
-
-						myFleet.printStatus();
-						game.printMyBoard(true, false);
-
-						if (game.getRemainingShips() == 0) {
-							imprimeTempoTotal(tempoTotal);
-							terminaJogo(game, diarioDeBordo, numeroDeRajadas);
-						}
-					}
-					break;
-				case SIMULA:
-					if (game != null) {
-						while (game.getRemainingShips() > 0){
-							numeroDeRajadas++; // Incrementa as rajadas na simulação
-							game.randomEnemyFire();
-							diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Automática): " + resumoUltimaJogada(game));
-
-							myFleet.printStatus();
-							game.printMyBoard(true, false);
-							try {
-								Thread.sleep(3000);
-							} catch (InterruptedException e) {
-								Thread.currentThread().interrupt();
-							}
-						}
-
-						if (game.getRemainingShips() == 0) {
-							tempoTotal.stop();
-							System.out.println("\n========================================");
-							System.out.println("⏱️  Tempo total de jogo (Simulação): " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
-							System.out.println("========================================");
-              terminaJogo(game, diarioDeBordo, numeroDeRajadas);
-						}
-					}
-					break;
-				case TIROS:
-					if (game != null)
-						game.printMyBoard(true, true);
-					break;
-				case PDF:
-					if (diarioDeBordo.isEmpty())
-						System.out.println("Ainda não há rajadas para exportar.");
-					else
-						PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
-          break;
-				case SCOREBOARD:
-					Scoreboard.showScoreboard(); // Exibe os resultados anteriores
-					break;
-				case AJUDA:
-					menuHelp();
-					break;
-				default:
-					System.out.println("Que comando é esse??? Repete ...");
-			}
-
-			// Reinicia o cronómetro para voltar a medir a PRÓXIMA jogada
-			tempoJogada.reset();
-			System.out.print("> ");
-			tempoJogada.start();
-			command = in.next();
-		}
-
-		// Parar o cronómetro total caso o utilizador digite "desisto"
-		imprimeTempoTotal(tempoTotal);
-		// O jogador desistiu: exporta o PDF das rajadas já feitas
-		if (!diarioDeBordo.isEmpty()) {
-			PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
-		}
-		System.out.println(GOODBYE_MESSAGE);
+		new GameMenu(new Scanner(System.in)).run();
 	}
 
-	private static void imprimeTempoTotal(StopWatch tempoTotal) {
+	private static void imprimeTempoTotal(StopWatch tempoTotal, String modo) {
 		tempoTotal.stop();
 		System.out.println("\n========================================");
-		System.out.println("⏱️  Tempo total de jogo: " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
+		System.out.println("⏱️  Tempo total de jogo" + modo + ": " + tempoTotal.getTime(TimeUnit.SECONDS) + " segundo(s).");
 		System.out.println("========================================");
 	}
 
 	private static void terminaJogo(IGame game, List<String> diarioDeBordo, int numeroDeRajadas) {
-    	game.over();
-    	Scoreboard.saveGame(numeroDeRajadas); // Grava no Scoreboard!
-    	PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
-    	System.exit(0);
+		game.over();
+		Scoreboard.saveGame(numeroDeRajadas); // Grava no Scoreboard!
+		PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+		System.exit(0);
 	}
+
 	private static String resumoUltimaJogada(IGame game) {
 		List<IMove> jogadas = game.getAlienMoves();
 		return jogadas.isEmpty() ? "" : jogadas.get(jogadas.size() - 1).getSummary();
@@ -255,25 +135,148 @@ public class Tasks {
 		}
 
 		String part1 = in.next();
-		String part2 = null;
-
-		if (in.hasNextInt()) {
-			part2 = in.next();
-		}
-
-		String input = (part2 != null) ? part1 + part2 : part1;
-		input = input.toUpperCase();
+		String input = (in.hasNextInt() ? part1 + in.next() : part1).toUpperCase();
 
 		if (input.matches(CLASSIC_POSITION_REGEX)) {
 			char column = input.charAt(0);
 			int row = Integer.parseInt(input.substring(1));
 			return new Position(column, row);
-		} else if (part2 != null && part1.matches("[A-Z]") && part2.matches("\\d+")) {
-			char column = part1.charAt(0);
-			int row = Integer.parseInt(part2);
-			return new Position(column, row);
-		} else {
-			throw new IllegalArgumentException("Formato inválido. Use 'A3', 'A 3' ou similar.");
+		}
+		throw new IllegalArgumentException("Formato inválido. Use 'A3', 'A 3' ou similar.");
+	}
+
+	/**
+	 * Estado e comandos de uma sessão do menu do jogo.
+	 * Criada com Replace Method with Method Object a partir de Tasks::menu (Long Method / Switch Statements):
+	 * o switch foi substituído por um mapa comando - ação e cada comando tem o seu método.
+	 */
+	private static final class GameMenu {
+
+		private final Scanner in;
+		private final StopWatch tempoTotal = new StopWatch();
+		private final StopWatch tempoJogada = new StopWatch();
+		private final List<String> diarioDeBordo = new ArrayList<>();
+		private final Map<String, Runnable> commands = new HashMap<>();
+		private IFleet myFleet;
+		private IGame game;
+		private int numeroDeRajadas;
+
+		GameMenu(Scanner in) {
+			this.in = in;
+			commands.put(GERAFROTA, () -> novoJogo(Fleet.createRandom()));
+			commands.put(LEFROTA, () -> novoJogo(buildFleet(this.in)));
+			commands.put(STATUS, this::estado);
+			commands.put(MAPA, this::mapa);
+			commands.put(RAJADA, this::rajada);
+			commands.put(SIMULA, this::simula);
+			commands.put(TIROS, this::tiros);
+			commands.put(PDF, this::exportarPdf);
+			commands.put(SCOREBOARD, Scoreboard::showScoreboard);
+			commands.put(AJUDA, Tasks::menuHelp);
+		}
+
+		void run() {
+			menuHelp();
+			tempoTotal.start(); // 1. Cronómetro total da partida
+			String command = proximoComando();
+			while (!command.equals(DESISTIR)) {
+				commands.getOrDefault(command, GameMenu::comandoDesconhecido).run();
+				tempoJogada.reset(); // volta a medir a PRÓXIMA jogada
+				command = proximoComando();
+			}
+			desistir();
+		}
+
+		private String proximoComando() {
+			System.out.print("> ");
+			tempoJogada.start(); // 2. Cronómetro individual por jogada
+			return in.next();
+		}
+
+		private void desistir() {
+			imprimeTempoTotal(tempoTotal, "");
+			// O jogador desistiu: exporta o PDF das rajadas já feitas
+			if (!diarioDeBordo.isEmpty()) {
+				PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+			}
+			System.out.println(GOODBYE_MESSAGE);
+		}
+
+		private void novoJogo(IFleet fleet) {
+			myFleet = fleet;
+			game = new Game(myFleet);
+			numeroDeRajadas = 0;      // novo jogo: reinicia o contador
+			diarioDeBordo.clear();    // e o diário de bordo
+			game.printMyBoard(false, true);
+		}
+
+		private void estado() {
+			if (myFleet != null)
+				myFleet.printStatus();
+		}
+
+		private void mapa() {
+			if (myFleet != null)
+				game.printMyBoard(false, true);
+		}
+
+		private void tiros() {
+			if (game != null)
+				game.printMyBoard(true, true);
+		}
+
+		private void exportarPdf() {
+			if (diarioDeBordo.isEmpty())
+				System.out.println("Ainda não há rajadas para exportar.");
+			else
+				PdfExporter.exportShots(diarioDeBordo, PDF_FILE);
+		}
+
+		private void rajada() {
+			if (game == null)
+				return;
+			numeroDeRajadas++; // Incrementa as rajadas efetuadas
+			game.readEnemyFire(in);
+			// Pára o tempo assim que a rajada é lida e os tiros processados
+			tempoJogada.stop();
+			long segundosJogada = tempoJogada.getTime(TimeUnit.SECONDS);
+			System.out.println("⏱️  Tempo desta jogada: " + segundosJogada + " segundo(s).\n");
+			registarRajada("Manual");
+			if (game.getRemainingShips() == 0) {
+				imprimeTempoTotal(tempoTotal, "");
+				terminaJogo(game, diarioDeBordo, numeroDeRajadas);
+			}
+		}
+
+		private void simula() {
+			if (game == null)
+				return;
+			while (game.getRemainingShips() > 0) {
+				numeroDeRajadas++; // Incrementa as rajadas na simulação
+				game.randomEnemyFire();
+				registarRajada("Automática");
+				pausa();
+			}
+			imprimeTempoTotal(tempoTotal, " (Simulação)");
+			terminaJogo(game, diarioDeBordo, numeroDeRajadas);
+		}
+
+		private void registarRajada(String modo) {
+			diarioDeBordo.add("Rajada " + numeroDeRajadas + " (" + modo + "): " + resumoUltimaJogada(game));
+			myFleet.printStatus();
+			game.printMyBoard(true, false);
+		}
+
+		private static void pausa() {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+
+		private static void comandoDesconhecido() {
+			System.out.println("Que comando é esse??? Repete ...");
 		}
 	}
 }
