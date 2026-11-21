@@ -25,13 +25,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * - buildFleet(): 4
  * - readShip(): 1
  * - readPosition(): 1
- * - readClassicPosition(): 8
+ * - readClassicPosition(): 4
  * Notes:
  * - terminaJogo() calls System.exit(0) and is not tested (it would stop the JUnit JVM);
  *   the same applies to the "simula" loop with a game, which only ends through terminaJogo().
  * - resumoUltimaJogada(): the "empty list" branch is unreachable (it is only called after a move).
- * - readClassicPosition(): the second "else if" is unreachable (if part1 is a letter and part2
- *   is a number, part1+part2 always matches the first regex).
  */
 public class TasksTest {
 

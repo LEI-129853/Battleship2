@@ -256,21 +256,21 @@ public class FleetTest {
 	@Test
 	@DisplayName("printShips: imprime um navio por linha")
 	void printShips1() {
-		fleet.printShips(List.of(new Barge(Compass.NORTH, new Position(0, 0)), new Barge(Compass.NORTH, new Position(5, 5))));
+		Fleet.printShips(List.of(new Barge(Compass.NORTH, new Position(0, 0)), new Barge(Compass.NORTH, new Position(5, 5))));
 		assertEquals(2, out.toString().lines().count(), "Error: expected 2 printed lines but got: " + out);
 	}
 
 	@Test
 	@DisplayName("printShips: lista vazia não imprime nada")
 	void printShips2() {
-		fleet.printShips(List.of());
+		Fleet.printShips(List.of());
 		assertEquals("", out.toString(), "Error: expected nothing printed but got: " + out);
 	}
 
 	@Test
 	@DisplayName("printShips: lista nula dispara o assert")
 	void printShips3() {
-		assertThrows(AssertionError.class, () -> fleet.printShips(null), "Error: expected AssertionError for null");
+		assertThrows(AssertionError.class, () -> Fleet.printShips(null), "Error: expected AssertionError for null");
 	}
 
 	// ---------- printStatus / printShipsByCategory / printFloatingShips / printAllShips ----------
