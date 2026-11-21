@@ -99,7 +99,8 @@ public class Tasks {
 
 						// Pára o tempo assim que a rajada é lida e os tiros processados
 						tempoJogada.stop();
-						System.out.println("⏱️  Tempo desta jogada: " + tempoJogada.getTime(TimeUnit.SECONDS) + " segundo(s).\n");
+						long segundosJogada = tempoJogada.getTime(TimeUnit.SECONDS);
+						System.out.println("⏱️  Tempo desta jogada: " + segundosJogada + " segundo(s).\n");
 						diarioDeBordo.add("Rajada " + numeroDeRajadas + " (Manual): " + resumoUltimaJogada(game));
 
 						myFleet.printStatus();
