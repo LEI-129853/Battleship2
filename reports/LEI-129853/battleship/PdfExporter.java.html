@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PdfExporter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Cobertura LEI-129853 Coverage Results</a> &gt; <a href="index.source.html" class="el_package">battleship</a> &gt; <span class="el_source">PdfExporter.java</span></div><h1>PdfExporter.java</h1><pre class="source lang-java linenums">package battleship;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+
+/**
+ * Exports the &quot;diário de bordo&quot; (one line per burst) to a PDF file.
+ */
+public class PdfExporter {
+
+    private static final String TITLE = &quot;Relatório do Diário de Bordo - Batalha Naval&quot;;
+    private static final float MARGIN = 50f;
+    private static final float LINE_HEIGHT = 18f;
+    private static final float FONT_SIZE = 12f;
+
+    private PdfExporter() {
+    }
+
+    /**
+     * Writes the log of bursts to a PDF file, one line per burst, adding pages as needed.
+     *
+     * @param linhas   the lines of the log (e.g. &quot;Rajada 1 (Manual): 2 Tiros na Água&quot;)
+     * @param fileName the name of the PDF file to create
+     */
+    public static void exportShots(List&lt;String&gt; linhas, String fileName) {
+<span class="fc" id="L34">        try (PDDocument doc = new PDDocument()) {</span>
+<span class="fc" id="L35">            PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);</span>
+<span class="fc" id="L36">            float top = PDRectangle.A4.getHeight() - MARGIN;</span>
+
+<span class="fc" id="L38">            PDPage page = new PDPage(PDRectangle.A4);</span>
+<span class="fc" id="L39">            doc.addPage(page);</span>
+<span class="fc" id="L40">            PDPageContentStream cs = new PDPageContentStream(doc, page);</span>
+<span class="fc" id="L41">            float y = top;</span>
+
+<span class="fc" id="L43">            y = writeLine(cs, font, TITLE, y);</span>
+<span class="fc" id="L44">            y -= LINE_HEIGHT;</span>
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            for (String linha : linhas) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (y &lt; MARGIN) {</span>
+<span class="fc" id="L48">                    cs.close();</span>
+<span class="fc" id="L49">                    page = new PDPage(PDRectangle.A4);</span>
+<span class="fc" id="L50">                    doc.addPage(page);</span>
+<span class="fc" id="L51">                    cs = new PDPageContentStream(doc, page);</span>
+<span class="fc" id="L52">                    y = top;</span>
+                }
+<span class="fc" id="L54">                y = writeLine(cs, font, linha, y);</span>
+<span class="fc" id="L55">            }</span>
+<span class="fc" id="L56">            cs.close();</span>
+
+<span class="fc" id="L58">            doc.save(new File(fileName));</span>
+<span class="fc" id="L59">            System.out.println(&quot;PDF guardado em: &quot; + new File(fileName).getAbsolutePath());</span>
+<span class="fc" id="L60">        } catch (IOException e) {</span>
+<span class="fc" id="L61">            System.out.println(&quot;Erro ao gerar o PDF: &quot; + e.getMessage());</span>
+<span class="fc" id="L62">        }</span>
+<span class="fc" id="L63">    }</span>
+
+    private static float writeLine(PDPageContentStream cs, PDType1Font font, String text, float y) throws IOException {
+<span class="fc" id="L66">        cs.beginText();</span>
+<span class="fc" id="L67">        cs.setFont(font, FONT_SIZE);</span>
+<span class="fc" id="L68">        cs.newLineAtOffset(MARGIN, y);</span>
+<span class="fc" id="L69">        cs.showText(sanitize(text));</span>
+<span class="fc" id="L70">        cs.endText();</span>
+<span class="fc" id="L71">        return y - LINE_HEIGHT;</span>
+    }
+
+    /** Keeps only characters the standard Helvetica font can encode (Latin-1). */
+    private static String sanitize(String text) {
+<span class="fc" id="L76">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (char c : text.toCharArray()) {</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">            if (c &gt;= 32 &amp;&amp; c &lt;= 255) {</span>
+<span class="fc" id="L79">                sb.append(c);</span>
+            }
+        }
+<span class="fc" id="L82">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
